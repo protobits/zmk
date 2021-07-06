@@ -150,7 +150,7 @@ static int kscan_gpio_config_interrupts(const struct device **devices,
             const struct device *out_dev = kscan_gpio_output_devices_##n(dev)[o];                  \
             const struct kscan_gpio_item_config *out_cfg = &kscan_gpio_output_configs_##n(dev)[o]; \
             err = gpio_pin_set(out_dev, out_cfg->pin, 1);                                          \
-            if (err) {                                                                             \
+            if (err) { \
                 LOG_ERR("Failed to set output active (err %d)", err);                              \
                 return err;                                                                        \
             }                                                                                      \
@@ -158,10 +158,12 @@ static int kscan_gpio_config_interrupts(const struct device **devices,
                 const struct device *in_dev = kscan_gpio_input_devices_##n(dev)[i];                \
                 const struct kscan_gpio_item_config *in_cfg =                                      \
                     &kscan_gpio_input_configs_##n(dev)[i];                                         \
-                kscan_gpio_set_matrix_state_##n(read_state, i, o,                                  \
-                                                gpio_pin_get(in_dev, in_cfg->pin) > 0);            \
+                int state = gpio_pin_get(in_dev, in_cfg->pin);                                     \
+                kscan_gpio_set_matrix_state_##n(read_state, i, o, \
+                                                state > 0);            \
             }                                                                                      \
             err = gpio_pin_set(out_dev, out_cfg->pin, 0);                                          \
+            k_busy_wait(2); \
             if (err) {                                                                             \
                 LOG_ERR("Failed to set output inactive (err %d)", err);                            \
                 return err;                                                                        \
@@ -200,8 +202,8 @@ static int kscan_gpio_config_interrupts(const struct device **devices,
         const struct device *dev, struct gpio_callback *cb, gpio_port_pins_t pin) {                \
         struct kscan_gpio_irq_callback_##n *data =                                                 \
             CONTAINER_OF(cb, struct kscan_gpio_irq_callback_##n, callback);                        \
-        kscan_gpio_disable_interrupts_##n(data->dev);                                              \
-        COND_CODE_0(DT_INST_PROP(n, debounce_period), ({ k_work_submit(data->work); }), ({         \
+        kscan_gpio_disable_interrupts_##n(data->dev); \
+COND_CODE_0(DT_INST_PROP(n, debounce_period), ({ k_work_submit(data->work); }), ({ \
                         k_delayed_work_cancel(data->work);                                         \
                         k_delayed_work_submit(data->work,                                          \
                                               K_MSEC(DT_INST_PROP(n, debounce_period)));           \

@@ -1,0 +1,8 @@
+# Copyright (c) 2020 Pete Johanson
+# SPDX-License-Identifier: MIT
+
+config SHIELD_GOJI_LEFT
+	def_bool $(shields_list_contains,goji_left)
+
+config SHIELD_GOJI_RIGHT
+	def_bool $(shields_list_contains,goji_right)

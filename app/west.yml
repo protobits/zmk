@@ -6,10 +6,12 @@ manifest:
       url-base: https://github.com/zmkfirmware
     - name: microsoft
       url-base: https://github.com/microsoft
+    - name: protobits
+      url-base: https://github.com/protobits
   projects:
     - name: zephyr
-      remote: zmkfirmware
-      revision: v2.5.0+zmk-fixes
+      remote: protobits
+      revision: rpico
       clone-depth: 1
       import:
         # TODO: Rename once upstream offers option like `exclude` or `denylist`

@@ -1,0 +1,58 @@
+
+if SHIELD_GOJI_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Goji Left"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+endif
+
+if SHIELD_GOJI_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "Goji Right"
+
+endif
+
+if SHIELD_GOJI_LEFT || SHIELD_GOJI_RIGHT
+
+config ZMK_SPLIT
+	default y
+
+if ZMK_DISPLAY
+
+#config SPI
+#	default y
+
+#config ST7789
+#	default y
+
+endif # ZMK_DISPLAY
+
+if LVGL
+
+config LVGL_HOR_RES_MAX
+	default 240
+
+config LVGL_VER_RES_MAX
+	default 135
+
+config LVGL_VDB_SIZE
+	default 64
+
+config LVGL_DPI
+	default 148
+
+config LVGL_BITS_PER_PIXEL
+	default 16
+
+choice LVGL_COLOR_DEPTH
+	default LVGL_COLOR_DEPTH_16
+endchoice
+
+endif # LVGL
+
+endif
+
