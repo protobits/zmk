@@ -154,6 +154,7 @@ static int kscan_gpio_config_interrupts(const struct device **devices,
                 LOG_ERR("Failed to set output active (err %d)", err);                              \
                 return err;                                                                        \
             }                                                                                      \
+            k_busy_wait(2); \
             for (int i = 0; i < INST_INPUT_LEN(n); i++) {                                          \
                 const struct device *in_dev = kscan_gpio_input_devices_##n(dev)[i];                \
                 const struct kscan_gpio_item_config *in_cfg =                                      \
