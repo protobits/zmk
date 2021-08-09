@@ -17,3 +17,6 @@
 		;
 };
 
+&usbd {
+	status = "okay";
+};

@@ -10,6 +10,7 @@
 	chosen {
 		zmk,kscan = &kscan0;
 		zmk,matrix_transform = &default_transform;
+		zmk,split_uart = &uart_pio0;
 	};
 
 	default_transform: keymap_transform_0 {
@@ -42,15 +43,21 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
 			, <&gpio0 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			, <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
-		
+
+		debounce-period = <8>;
+	};
+
+	uart_pio0: uart-pio {
+		compatible = "raspberrypi,rp2-pio-uart";
+		status = "okay";
+		label = "UART_PIO0";
+		pin = <26>;	
+		pio = <0>;
+		current-speed = <115200>;
 	};
 };
 
 &uart0  {
   tx-pin = <12>;
   rx-pin = <13>;
-};
-
-&usbd {
-	status = "okay";
 };
