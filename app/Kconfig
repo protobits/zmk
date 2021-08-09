@@ -155,6 +155,58 @@ endif
 #ZMK_SPLIT_BLE
 endif
 
+menuconfig ZMK_SPLIT_UART
+	bool "Split keyboard support via UART transport"
+	depends on SERIAL_HAS_DRIVER
+	default n
+
+if ZMK_SPLIT_UART
+
+config ZMK_SPLIT_UART_ONE_WAY
+	bool "One-way communication"
+	---help---
+		This should be selected for half-duplex (one-wire) serial
+		links. This means that the peripheral side will not be able
+		to receive any commands from central side and will simply
+		set keypress events to central.
+
+menuconfig ZMK_SPLIT_UART_ROLE_CENTRAL
+	bool "Central"	
+
+if ZMK_SPLIT_UART_ROLE_CENTRAL
+
+config ZMK_SPLIT_UART_CENTRAL_STACK_SIZE
+	int "BLE split central notify thread stack size"
+	default 512
+
+config ZMK_SPLIT_UART_CENTRAL_PRIORITY
+	int "BLE split central notify thread priority"
+	default 5
+
+config ZMK_SPLIT_UART_CENTRAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue when received from peripherals"
+	default 5
+
+endif # ZMK_SPLIT_UART_ROLE_CENTRAL
+
+if !ZMK_SPLIT_UART_ROLE_CENTRAL
+
+config ZMK_SPLIT_UART_PERIPHERAL_STACK_SIZE
+	int "BLE split peripheral notify thread stack size"
+	default 512
+
+config ZMK_SPLIT_UART_PERIPHERAL_PRIORITY
+	int "BLE split peripheral notify thread priority"
+	default 5
+
+config ZMK_SPLIT_UART_PERIPHERAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue to send to the central"
+	default 10
+
+endif # !ZMK_SPLIT_UART_ROLE_CENTRAL
+
+endif # ZMK_SPLIT_UART
+
 #ZMK_SPLIT
 endif 
 
@@ -321,6 +373,15 @@ config ZMK_BLE_INIT_PRIORITY
 	default 50
 
 #ZMK_BLE || ZMK_SPLIT_BLE
+endif
+
+if ZMK_SPLIT_UART
+
+config ZMK_UART_INIT_PRIORITY
+	int "UART Init Priority"
+	default 50
+
+#ZMK_UART_INIT_PRIORITY
 endif
 
 #Initialization Priorities

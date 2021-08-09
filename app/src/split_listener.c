@@ -10,7 +10,11 @@
 #include <power/reboot.h>
 #include <logging/log.h>
 
+#if defined(CONFIG_ZMK_SPLIT_BLE)
 #include <zmk/split/bluetooth/service.h>
+#elif defined(CONFIG_ZMK_SPLIT_UART)
+#include <zmk/split/uart/peripheral.h>
+#endif
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -24,9 +28,15 @@ int split_listener(const zmk_event_t *eh) {
     const struct zmk_position_state_changed *ev = as_zmk_position_state_changed(eh);
     if (ev != NULL) {
         if (ev->state) {
+#if defined(CONFIG_ZMK_SPLIT_BLE)
             return zmk_split_bt_position_pressed(ev->position);
         } else {
             return zmk_split_bt_position_released(ev->position);
+#elif defined(CONFIG_ZMK_SPLIT_UART)
+            return zmk_split_uart_position_pressed(ev->position);
+        } else {
+            return zmk_split_uart_position_released(ev->position);
+#endif
         }
     }
     return ZMK_EV_EVENT_BUBBLE;
